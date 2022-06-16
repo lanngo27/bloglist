@@ -7,9 +7,10 @@ import { setVisible } from '../reducers/togglableReducer'
 import Notification from './Notification'
 
 const Blog = (props) => {
-  if (!props.blog) return null
   const blog = props.blog
   const [comment, setComment] = useState('')
+
+  if (!props.blog) return null
 
   const voteBlog = async (blog) => {
     try {

@@ -15,3 +15,10 @@ Tech:
 - jsonwebtoken
 - React
 - Redux
+
+How to use:
+```bash
+npm install
+npm run build
+npm start
+```
