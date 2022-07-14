@@ -23,7 +23,8 @@ const BlogForm = (props) => {
         <Form.Group className="mb-3">
           <Form.Label>Title</Form.Label>
           <Form.Control
-            className="w-50"
+            className="w-50 title"
+            id="title"
             type="text"
             placeholder="Enter title"
             value={title}
@@ -33,7 +34,8 @@ const BlogForm = (props) => {
         <Form.Group className="mb-3">
           <Form.Label>Author</Form.Label>
           <Form.Control
-            className="w-50"
+            className="w-50 author"
+            id="author"
             type="text"
             placeholder="Enter author"
             value={author}
@@ -43,14 +45,21 @@ const BlogForm = (props) => {
         <Form.Group className="mb-3">
           <Form.Label>URL</Form.Label>
           <Form.Control
-            className="w-50"
+            className="w-50 url"
+            id="url"
             type="text"
             placeholder="Enter URL"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
         </Form.Group>
-        <Button type="submit" bg="dark" variant="dark" className="m-1">
+        <Button
+          type="submit"
+          bg="dark"
+          variant="dark"
+          className="m-1"
+          id="blog-button"
+        >
           Create
         </Button>
         <Button

@@ -22,6 +22,7 @@ const App = (props) => {
     userService.getAll().then((users) => setUsers(users))
     props.initializeBlogs()
     props.findExistingUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleLogout = async (event) => {

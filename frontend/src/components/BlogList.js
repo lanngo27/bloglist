@@ -76,7 +76,7 @@ const BlogList = (props) => {
         {blogs
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <div key={blog.id}>
+            <div key={blog.id} className="bloglist">
               <ListGroup.Item
                 action
                 variant="light"

@@ -14,6 +14,8 @@ const togglableSlice = createSlice({
           return { ...state, loginVisible: !state.loginVisible }
         case 'createBlog':
           return { ...state, createBlogVisible: !state.createBlogVisible }
+        default:
+          return { ...state }
       }
     }
   }

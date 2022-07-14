@@ -1,13 +1,17 @@
 {
   "name": "bloglist",
-  "version": "0.0.1",
-  "description": "",
+  "version": "1.0.0",
+  "description": "A application to store zour favorite blogs",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node backend",
     "dev": "cross-env NODE_ENV=development nodemon backend",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --force-exit",
     "lint": "eslint .",
-    "build": "cd frontend/ && npm install && npm run build"
+    "build": "cd frontend/ && npm install && npm run build",
+    "start:test": "cross-env NODE_ENV=test nodemon backend",
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run"
   },
   "cacheDirectories": [
     "node_modules",
@@ -28,10 +32,15 @@
   },
   "devDependencies": {
     "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-jest": "^26.1.4",
     "eslint-plugin-react": "^7.29.4",
     "jest": "^27.5.1",
+    "jest-watch-typeahead": "^0.6.5",
     "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "supertest": "^6.2.2",
+    "cypress": "^9.5.4"
   },
   "jest": {
     "testEnvironment": "node"

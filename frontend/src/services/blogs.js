@@ -38,4 +38,6 @@ const addComment = async (id, comment) => {
   return response.data
 }
 
-export default { getAll, create, update, deleteBlog, setToken, addComment }
+const exported = { getAll, create, update, deleteBlog, setToken, addComment }
+
+export default exported

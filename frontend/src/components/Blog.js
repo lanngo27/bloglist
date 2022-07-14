@@ -90,6 +90,7 @@ const Blog = (props) => {
           />
         </Form.Group>
         <Button
+          id="newcomment-button"
           bg="dark"
           variant="dark"
           onClick={() => props.setVisible('createBlog')}
