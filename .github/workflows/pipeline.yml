@@ -30,11 +30,11 @@ jobs:
       - name: npm install
         run: npm install
 
-      - name: lint
-        run: npm run lint
-
       - name: build
         run: npm run build
+
+      - name: lint
+        run: npm run lint
 
       # Run backend test
       - name: test
