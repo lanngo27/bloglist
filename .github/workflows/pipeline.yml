@@ -35,20 +35,20 @@ jobs:
       - name: npm install
         run: npm install
 
-      - name: build
+      - name: Run build
         run: npm run build
 
-      - name: lint
+      - name: Run lint
         run: npm run lint
 
       # Run backend test
-      - name: test
+      - name: Run backend test
         run: npm run test
 
       # Run e2e test
-      - name: e2e tests
+      - name: Run e2e tests
         uses: cypress-io/github-action@v2
         with:
           command: npm run test:e2e
-          start: npm start:test
+          start: npm run start:test
           wait-on: http://localhost:3003
