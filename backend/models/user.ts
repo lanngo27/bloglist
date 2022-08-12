@@ -1,6 +1,14 @@
-const mongoose = require('mongoose')
+import { Schema, Document, model } from 'mongoose'
+import { IBlog } from './blog'
 
-const userSchema = new mongoose.Schema({
+export interface IUser extends Document {
+  username: string
+  name: string
+  passwordHash: string
+  blogs: IBlog['_id'][]
+}
+
+const userSchema = new Schema({
   username: {
     type: String,
     minLength: 3,
@@ -10,14 +18,14 @@ const userSchema = new mongoose.Schema({
   passwordHash: String,
   blogs: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Blog'
     }
-  ],
+  ]
 })
 
 userSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
+  transform: (_document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
@@ -26,4 +34,4 @@ userSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('User', userSchema)
+export default model<IUser>('User', userSchema)

@@ -1,7 +1,8 @@
-const User = require('../models/user')
-const Blog = require('../models/blog')
+import User, { IUser } from '../models/user'
+import Blog, { IBlog } from '../models/blog'
+import { BlogJSON, NewUser, TestingBlog, UserJSON } from '../typings/types'
 
-const getInitialBlogs = (userId) => {
+const getInitialBlogs = (userId: string): TestingBlog[] => {
   return [
     {
       title: 'React patterns',
@@ -48,7 +49,7 @@ const getInitialBlogs = (userId) => {
   ]
 }
 
-const nonExistingId = async () => {
+const nonExistingId = async (): Promise<string> => {
   const blog = new Blog({
     title: 'to be removed',
     author: 'to be removed',
@@ -61,35 +62,37 @@ const nonExistingId = async () => {
   return blog._id.toString()
 }
 
-const blogsInDb = async () => {
-  const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+const blogsInDb = async (): Promise<BlogJSON[]> => {
+  const blogs: IBlog[] = await Blog.find({})
+  return blogs.map((blog) => blog.toJSON())
 }
 
-const usersInDb = async () => {
-  const users = await User.find({})
-  return users.map(user => user.toJSON())
+const usersInDb = async (): Promise<UserJSON[]> => {
+  const users: IUser[] = await User.find({})
+  return users.map((user) => user.toJSON())
 }
 
-const createTestUser = async (api) => {
-  const testUser = {
+const createTestUser = async (api: any): Promise<string[]> => {
+  const testUser: NewUser = {
     username: 'testuser',
     name: 'Test User',
     password: 'testtest'
   }
 
-  await api
-    .post('/api/users')
-    .send(testUser)
-  const createdUser = await User.findOne(testUser)
+  await api.post('/api/users').send(testUser)
+  const createdUser: IUser | null = await User.findOne(testUser)
 
-  const result = await api
-    .post('/api/login')
-    .send(testUser)
-
-  return [ createdUser._id.toString(), result.body.token ]
+  if (createdUser) {
+    const result = await api.post('/api/login').send(testUser)
+    return [createdUser._id.toString(), result.body.token]
+  }
+  return ['', '']
 }
 
-module.exports = {
-  getInitialBlogs, nonExistingId, blogsInDb, usersInDb, createTestUser
+export default {
+  getInitialBlogs,
+  nonExistingId,
+  blogsInDb,
+  usersInDb,
+  createTestUser
 }

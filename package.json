@@ -1,17 +1,18 @@
 {
   "name": "bloglist",
   "version": "1.0.0",
-  "description": "A application to store zour favorite blogs",
+  "description": "An application to store zour favorite blogs",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node backend",
-    "dev": "cross-env NODE_ENV=development nodemon backend",
+    "start": "cross-env NODE_ENV=production node build",
+    "dev": "cross-env NODE_ENV=development ts-node-dev backend",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --force-exit",
-    "lint": "eslint .",
+    "lint": "eslint --ext .ts",
     "build": "cd frontend/ && npm install && npm run build",
-    "start:test": "cross-env NODE_ENV=test nodemon backend",
+    "start:test": "cross-env NODE_ENV=test nodemon build",
     "cypress:open": "cypress open",
-    "test:e2e": "cypress run"
+    "test:e2e": "cypress run",
+    "tsc": "tsc --project tsconfig.build.json"
   },
   "cacheDirectories": [
     "node_modules",
@@ -31,18 +32,43 @@
     "mongoose": "^6.2.10"
   },
   "devDependencies": {
-    "eslint": "^8.12.0",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.6",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^18.7.2",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "cypress": "^9.5.4",
+    "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^26.1.4",
     "eslint-plugin-react": "^7.29.4",
-    "jest": "^27.5.1",
-    "jest-watch-typeahead": "^0.6.5",
     "nodemon": "^2.0.15",
     "supertest": "^6.2.2",
-    "cypress": "^9.5.4"
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/tests/*.test.(ts|tsx|js)"
+    ]
   }
 }

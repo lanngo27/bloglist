@@ -1,8 +1,13 @@
+import logger from './logger'
+import User from '../models/user'
+import { Request, Response, NextFunction } from 'express'
 const jwt = require('jsonwebtoken')
-const logger = require('./logger')
-const User = require('../models/user')
 
-const requestLogger = (request, response, next) => {
+const requestLogger = (
+  request: Request,
+  _response: Response,
+  next: NextFunction
+) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
   logger.info('Body:  ', request.body)
@@ -10,11 +15,16 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (_request: Request, response: Response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (
+  error: any,
+  _request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   logger.error(error.message)
 
   if (error.name === 'CastError') {
@@ -31,10 +41,14 @@ const errorHandler = (error, request, response, next) => {
     })
   }
 
-  next(error)
+  return next(error)
 }
 
-const tokenExtractor = (request, response, next) => {
+const tokenExtractor = (
+  request: Request,
+  _response: Response,
+  next: NextFunction
+) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     request.token = authorization.substring(7)
@@ -42,7 +56,11 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
-const userExtractor = async (request, response, next) => {
+const userExtractor = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     response.status(400).json({
@@ -50,11 +68,15 @@ const userExtractor = async (request, response, next) => {
     })
   }
 
-  request.user = await User.findById(decodedToken.id)
+  const user = await User.findById(decodedToken.id)
+  if (user) {
+    request.user = user
+  }
+
   next()
 }
 
-module.exports = {
+export default {
   requestLogger,
   unknownEndpoint,
   errorHandler,

@@ -1,95 +1,103 @@
-const supertest = require('supertest')
-const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const helper = require('./test_helper')
-const app = require('../app')
-const api = supertest(app)
-
-const User = require('../models/user')
+import request from 'supertest'
+import mongoose from 'mongoose'
+import helper from '../utils/test_helper'
+import app from '../app'
+import User, { IUser } from '../models/user'
+import { NewUser, UserJSON } from '../typings/types'
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
+    const passwordHash: string = await bcrypt.hash('sekret', 10)
+    const user: IUser = new User({ username: 'root', passwordHash })
 
     await user.save()
   })
 
   test('creation succeeds with a fresh username', async () => {
-    const usersAtStart = await helper.usersInDb()
+    const usersAtStart: UserJSON[] = await helper.usersInDb()
 
-    const newUser = {
+    const newUser: NewUser = {
       username: 'lanngo2',
-      user: 'Lan Ngo',
+      name: 'Lan Ngo',
       password: 'ngo123'
     }
 
-    await api
+    await request(app)
       .post('/api/users')
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd: UserJSON[] = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map((user) => user.username)
+    const usernames: string[] = usersAtEnd.map((user) => user.username)
     expect(usernames).toContain(newUser.username)
   })
 
   test('creation fails with proper statuscode and message if username is already taken', async () => {
-    const usersAtStart = await helper.usersInDb()
+    const usersAtStart: UserJSON[] = await helper.usersInDb()
 
-    const newUser = {
+    const newUser: NewUser = {
       username: 'root',
-      user: 'root user',
+      name: 'root user',
       password: 'ngo123'
     }
 
-    const result = await api.post('/api/users').send(newUser).expect(400)
+    const result = await request(app)
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
 
     expect(result.body.error).toContain('Username must be unique')
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd: UserJSON[] = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 
   test('creation fails with proper statuscode and message if password is not given', async () => {
-    const usersAtStart = await helper.usersInDb()
+    const usersAtStart: UserJSON[] = await helper.usersInDb()
 
-    const newUser = {
+    const newUser: NewUser = {
       username: 'lanngo',
-      user: 'Lan Ngo'
+      name: 'Lan Ngo'
     }
 
-    const result = await api.post('/api/users').send(newUser).expect(400)
+    const result = await request(app)
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
 
     expect(result.body.error).toContain(
       'Password must be given with length at least 3 characters long'
     )
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd: UserJSON[] = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 
   test('creation fails with proper statuscode and message if password is less than 3 characters long', async () => {
-    const usersAtStart = await helper.usersInDb()
+    const usersAtStart: UserJSON[] = await helper.usersInDb()
 
-    const newUser = {
+    const newUser: NewUser = {
       username: 'lanngo',
-      user: 'Lan Ngo',
+      name: 'Lan Ngo',
       password: 'ng'
     }
 
-    const result = await api.post('/api/users').send(newUser).expect(400)
+    const result = await request(app)
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
 
     expect(result.body.error).toContain(
       'Password must be given with length at least 3 characters long'
     )
 
-    const usersAtEnd = await helper.usersInDb()
+    const usersAtEnd: UserJSON[] = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 })

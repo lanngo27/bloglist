@@ -1,18 +1,20 @@
-const express = require('express')
 require('express-async-errors')
 const cors = require('cors')
-const mongoose = require('mongoose')
-const blogsRouter = require('./controllers/blogs')
-const usersRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
-const logger = require('./utils/logger')
-const config = require('./utils/config')
-const middleware = require('./utils/middleware')
-const path = require('path')
 
-const app = express()
+import express, { Application } from 'express'
+import mongoose from 'mongoose'
+import blogsRouter from './routes/blogs'
+import usersRouter from './routes/users'
+import loginRouter from './routes/login'
+import testRouter from './routes/testing'
+import logger from './utils/logger'
+import config from './utils/config'
+import middleware from './utils/middleware'
+import path from 'path'
 
-const mongoUrl = config.MONGODB_URI
+const app: Application = express()
+
+const mongoUrl: string = config.MONGODB_URI
 logger.info('connecting to ', mongoUrl)
 mongoose
   .connect(mongoUrl)
@@ -36,12 +38,11 @@ app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
-if (process.env.NODE_ENV === 'test') {
-  const testRouter = require('./controllers/testing')
+if (config.NODE_ENV === 'test') {
   app.use('/api/testing', testRouter)
 }
 
-app.get('/*', function (req, res) {
+app.get('/*', function (_req, res) {
   res.sendFile(
     path.join(__dirname, '../frontend/build/index.html'),
     function (err) {
@@ -55,4 +56,4 @@ app.get('/*', function (req, res) {
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
-module.exports = app
+export default app

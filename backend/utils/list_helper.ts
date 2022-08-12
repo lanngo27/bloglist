@@ -1,14 +1,20 @@
 const lodash = require('lodash')
+import { IBlog } from '../models/blog'
+import {
+  Blog,
+  AuthorWithMostBlogs,
+  AuthorWithMostLikes
+} from '../typings/types'
 
-const totalLikes = (blogs) => {
+const totalLikes = (blogs: Array<IBlog>): number => {
   return blogs.reduce((sum, blog) => {
     return sum + blog.likes
   }, 0)
 }
 
-const favoriteBlog = (blogs) => {
+const favoriteBlog = (blogs: Array<IBlog>): Blog | {} => {
   if (blogs.length === 0) return {}
-  const favoriteBlog = blogs.reduce((max, blog) =>
+  const favoriteBlog: IBlog = blogs.reduce((max, blog) =>
     max.likes > blog.likes ? max : blog
   )
   return {
@@ -18,16 +24,16 @@ const favoriteBlog = (blogs) => {
   }
 }
 
-const mostBlogs = (blogs) => {
+const mostBlogs = (blogs: Array<IBlog>): AuthorWithMostBlogs | {} => {
   if (blogs.length === 0) return {}
-  const counts = lodash.countBy(blogs, (blog) => blog.author)
+  const counts = lodash.countBy(blogs, (blog: IBlog) => blog.author)
   const maxAuthor = Object.keys(counts).reduce((max, item) =>
     counts[max] > counts[item] ? max : item
   )
   return { author: maxAuthor, blogs: counts[maxAuthor] }
 }
 
-const mostLikes = (blogs) => {
+const mostLikes = (blogs: Array<IBlog>): AuthorWithMostLikes | {} => {
   if (blogs.length === 0) return {}
   const groupedByAuthor = lodash.groupBy(blogs, 'author')
   const totalLikesGroupedByAuthor = Object.keys(groupedByAuthor).map((key) => ({
@@ -39,7 +45,7 @@ const mostLikes = (blogs) => {
   )
 }
 
-module.exports = {
+export default {
   totalLikes,
   favoriteBlog,
   mostBlogs,
